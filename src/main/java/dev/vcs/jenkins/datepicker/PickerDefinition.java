@@ -22,6 +22,8 @@ public class PickerDefinition extends ParameterDefinition {
 
     private String value;
 
+    private StringLocalDateValue stringLocalDateValue = null;
+
     protected PickerDefinition(String name, String description, String type, String defaultValue) {
         super(name, description);
 
@@ -31,14 +33,24 @@ public class PickerDefinition extends ParameterDefinition {
 
         this.defaultValue = defaultValue;
         this.value = defaultValue;
+
+        this.stringLocalDateValue = new StringLocalDateValue(defaultValue, defaultFormat);
     }
 
+    private StringLocalDateValue GetlocalDateValue()
+    {
+        if (this.stringLocalDateValue == null)
+        {
+            this.stringLocalDateValue = new StringLocalDateValue(defaultValue, defaultFormat);
+        }
+        return this.stringLocalDateValue;
+    }
     /**
      * Called from jelly
      * @return the default value
      */
     public String getDefaultValue() {
-        return this.defaultValue;
+        return this.GetlocalDateValue().getStringLocalDate();
     }
 
     /**
@@ -46,7 +58,7 @@ public class PickerDefinition extends ParameterDefinition {
      * @return the value entered, if blank, default value
      */
     public String getValue() {
-        return this.value;
+        return this.GetlocalDateValue().getValue();
     }
 
     /**

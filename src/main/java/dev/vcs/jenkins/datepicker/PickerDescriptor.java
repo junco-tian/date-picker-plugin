@@ -44,8 +44,23 @@ public class PickerDescriptor extends ParameterDefinition.ParameterDescriptor {
         return FormValidation.ok();
     }
 
+    public FormValidation doCheckDateFormat(@QueryParameter String dateFormat) {
+        if (isEmpty(dateFormat)) {
+            return FormValidation.error("Please enter a date format");
+        }
+        return FormValidation.ok();
+    }
+
     public FormValidation doCheckDefaultValue(@QueryParameter String type, @QueryParameter String defaultValue) {
-        if (validateJavaDate(type, defaultValue)) {
+
+        String dateFormat = PickerType.resolve(type).getFormat();
+
+        StringLocalDateValue value = new StringLocalDateValue(defaultValue, dateFormat);
+        if (value.isCompletionFormat()) {
+            return FormValidation.ok();
+        }
+
+        if (value.isJavaFormat()) {
             return FormValidation.ok();
         }
         return FormValidation.error("Invalid default value");
